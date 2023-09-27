@@ -5,7 +5,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     now = datetime.now()
-    return str(now)
+    return str(now), "pong"
     
 if __name__ == "__main__":
 	app.run()
