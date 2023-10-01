@@ -8,7 +8,7 @@ def index(): #Index function to return pong response, current time, and name of 
     now = datetime.now() #current time using datetime.now method to variable
     message = "pong" #pong response to string variable
     machine = socket.gethostname() #name of machine using socket.gethostname() method to variable
-    return [str(now), message, machine]; #returns variables in list
+    return [str(now), message, machine]; #returns variables in list TESTING 
 
 response = index() #index function data stored inside variable
 print(response) #data of response printed
