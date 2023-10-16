@@ -12,6 +12,14 @@ def index(): #Index function to return pong response, current time, and name of 
 
 response = index() #index function data stored inside variable
 print(response) #data of response printed
+
+@app.route('/textcombine', methods=['GET','POST'])
+def textcombine():
+      test = "testing"
+      return test;
+
+#testresponse = textcombine()
+#print(testresponse)      
     
 if __name__ == "__main__":
 	app.run()
