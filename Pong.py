@@ -1,4 +1,4 @@
-from flask import Flask #importing Flask
+from flask import Flask, jsonify #importing Flask
 from datetime import datetime #importing datetime module
 import socket #importing socket module
 app = Flask(__name__)
@@ -15,11 +15,13 @@ print(response) #data of response printed
 
 @app.route('/textcombine', methods=['GET','POST'])
 def textcombine():
-      test = "testing"
-      return test;
+    #testmsg = 'testing'
+    jsondata = {
+         'firstMessage': 'Hello',  #Sends Hello to 1stMessage
+         'secondMessage': 'Jahurul' #Adds Jahurul to 2ndMessage
+         }
+    return jsonify(jsondata) #Returns the dictionary above as json
 
-#testresponse = textcombine()
-#print(testresponse)      
     
 if __name__ == "__main__":
 	app.run()
