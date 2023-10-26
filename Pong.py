@@ -1,4 +1,4 @@
-from flask import Flask, jsonify #importing Flask
+from flask import Flask, jsonify, request #importing Flask
 from datetime import datetime #importing datetime module
 import socket #importing socket module
 app = Flask(__name__)
@@ -13,14 +13,13 @@ def index(): #Index function to return pong response, current time, and name of 
 response = index() #index function data stored inside variable
 print(response) #data of response printed
 
-@app.route('/textcombine', methods=['GET','POST'])
+@app.route('/textcombine', methods=['POST'])
 def textcombine():
     #testmsg = 'testing'
-    jsondata = {
-         'firstMessage': 'Hello',  #Sends Hello to 1stMessage
-         'secondMessage': 'Jahurul' #Adds Jahurul to 2ndMessage
-         }
-    return jsonify(jsondata) #Returns the dictionary above as json
+    request_data = request.get_json()
+    fstMessage = request_data['firstMessage']
+    secMessage = request_data['secondMessage']
+    return jsonify(fstMessage,secMessage) #Returns the dictionary above as json
 
     
 if __name__ == "__main__":
