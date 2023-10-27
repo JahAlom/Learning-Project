@@ -19,7 +19,8 @@ def textcombine():
     request_data = request.get_json()
     fstMessage = request_data['firstMessage']
     secMessage = request_data['secondMessage']
-    return jsonify(fstMessage,secMessage) #Returns the dictionary above as json
+    cmbMessage = fstMessage+secMessage
+    return jsonify("Combined Message: " + cmbMessage) #Returns the dictionary above as json
 
     
 if __name__ == "__main__":
