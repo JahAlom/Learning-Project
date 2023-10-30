@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request #importing Flask
 from datetime import datetime #importing datetime module
 import socket #importing socket module
+import json
 app = Flask(__name__)
 
 @app.route("/")
@@ -15,12 +16,13 @@ print(response) #data of response printed
 
 @app.route('/textcombine', methods=['POST'])
 def textcombine():
-    #testmsg = 'testing'
-    request_data = request.get_json()
+    
+    request_data = request.get_json() #requesting data from user
     fstMessage = request_data['firstMessage']
     secMessage = request_data['secondMessage']
-    cmbMessage = fstMessage+secMessage
-    return jsonify("Combined Message: " + cmbMessage) #Returns the dictionary above as json
+    cmbMessage = fstMessage + secMessage #combined messagees
+
+    return jsonify(combinedMessage = (cmbMessage))
 
     
 if __name__ == "__main__":
