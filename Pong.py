@@ -21,8 +21,13 @@ def textcombine():
     fstMessage = request_data['firstMessage']
     secMessage = request_data['secondMessage']
     cmbMessage = fstMessage + secMessage #combined messagees
+    bannedWords = ['Fail', 'Wrong', 'Bad']
 
-    return jsonify(combinedMessage = (cmbMessage))
+    #Checks if any words in Banned Words list appears in User's Message
+    if any(word in cmbMessage for word in bannedWords) :
+         return "Banned Word in Message", 400
+    else:     
+        return jsonify(combinedMessage = (cmbMessage))
 
     
 if __name__ == "__main__":
