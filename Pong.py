@@ -24,12 +24,10 @@ def textcombine():
     bannedWords = ['Fail', 'Wrong', 'Bad']
 
     #Checks if any words in Banned Words list appears in User's Message
-    
     for word in bannedWords :
         if (word.lower() in cmbMessage.lower()):
             return "Banned Word in Message", 400
-    else:     
-            return jsonify(combinedMessage = (cmbMessage))
+    return jsonify(combinedMessage = (cmbMessage))
 
     
 if __name__ == "__main__":
