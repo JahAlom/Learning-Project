@@ -3,6 +3,7 @@ from datetime import datetime #importing datetime module
 import socket #importing socket module
 from bannedWordChecker import hasBannedWords
 import json
+import requests
 app = Flask(__name__)
 
 @app.route("/")
@@ -19,7 +20,7 @@ print(response) #data of response printed
 def textcombine():
     request_data = request.get_json() #requesting data from user
     fstMessage = request_data['firstMessage']
-    secMessage = request_data['secondMessage']
+    secMessage = request_data['secondMessage'] 
     cmbMessage = fstMessage + secMessage #combined messagees
 
     #Checks if any words in Banned Words list appears in User's Message
@@ -27,6 +28,14 @@ def textcombine():
     if isbanned:
         return "Banned Word in Message", 400
     return jsonify(combinedMessage = (cmbMessage))
+
+@app.route("/google")
+def google():
+    search = request.args.get('q')
+    q = {'q': search}
+    r = requests.get("https://google.com/search", params=q)
+
+    return (r.text)
 
     
 if __name__ == "__main__":
