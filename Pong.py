@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request #importing Flask
 from datetime import datetime #importing datetime module
 import socket #importing socket module
 from bannedWordChecker import hasBannedWords
+from bs4 import BeautifulSoup
 import json
 import requests
 app = Flask(__name__)
@@ -35,8 +36,11 @@ def google():
     q = {'q': search}
     r = requests.get("https://google.com/search", params=q)
 
-    return (r.text)
+    #parse HTML for title of search results and return
+    soup = BeautifulSoup(r.text, 'html.parser')
+    titles = soup.find_all('h3')
+    return str(titles)
 
-    
+
 if __name__ == "__main__":
 	app.run(port = 8000)
