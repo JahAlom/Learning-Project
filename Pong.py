@@ -30,7 +30,7 @@ def textcombine():
         return "Banned Word in Message", 400
     return jsonify(combinedMessage = (cmbMessage))
 
-@app.route("/google")
+@app.route("/google", methods = ['GET', 'POST'])
 def google():
     search = request.args.get('q')
     q = {'q': search}
@@ -39,7 +39,14 @@ def google():
     #parse HTML for title of search results and return
     soup = BeautifulSoup(r.text, 'html.parser')
     titles = soup.find_all('h3')
-    return str(titles)
+    url = soup.find_all('a')
+
+    results = []
+    for title, link in zip(titles,url):
+         result = {'Title': str(title.text), 'URL': link.get('href')}
+         results.append(result)
+    return jsonify(results)
+    
 
 
 if __name__ == "__main__":
