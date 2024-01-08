@@ -3,6 +3,7 @@ from datetime import datetime #importing datetime module
 import socket #importing socket module
 from bannedWordChecker import hasBannedWords
 from bs4 import BeautifulSoup
+import urllib.parse
 import json
 import requests
 app = Flask(__name__)
@@ -39,13 +40,17 @@ def google():
     #parse HTML for title of search results and return
     soup = BeautifulSoup(r.text, 'html.parser')
     titles = soup.find_all('h3')
-    h3_tags = soup.find_all('h3')
 
     results = []
-    for title, h3_tag in zip(titles, h3_tags):
-         result = {'title': str(title.text), 'url': str(h3_tag.find_parent('a'))}
-         results.append(result)
+    for title, h3_tag in zip(titles, titles):
+         a_tag = h3_tag.find_parent('a')
+         if a_tag:
+              link = a_tag.get('href', '')
+              link = urllib.parse.unquote(link.replace('/url?q=', ''))
+              result = {'title': str(title.text), 'url': str(link)}
+              results.append(result)
     return jsonify(results)
+    
     
 
 
