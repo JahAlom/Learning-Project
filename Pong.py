@@ -39,11 +39,11 @@ def google():
     #parse HTML for title of search results and return
     soup = BeautifulSoup(r.text, 'html.parser')
     titles = soup.find_all('h3')
-    url = soup.find_all('a')
+    h3_tags = soup.find_all('h3')
 
     results = []
-    for title, link in zip(titles,url):
-         result = {'Title': str(title.text), 'URL': link.get('href')}
+    for title, h3_tag in zip(titles, h3_tags):
+         result = {'title': str(title.text), 'url': str(h3_tag.find_parent('a'))}
          results.append(result)
     return jsonify(results)
     
