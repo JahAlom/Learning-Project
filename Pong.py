@@ -54,7 +54,7 @@ def google():
 @app.route('/mlb/games', methods=['GET','POST'])
 def mlb():
     today = date.today()
-    stats = requests.get("https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={}&endDate={}".format(today,today))
+    stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={today}&endDate={today}")
     soup = BeautifulSoup(stats.text, 'html.parser')
     return str(soup)
 
