@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request #importing Flask
-from datetime import datetime #importing datetime module
+from datetime import datetime, date #importing datetime module
 import socket #importing socket module
 from bannedWordChecker import hasBannedWords
 from bs4 import BeautifulSoup
@@ -51,7 +51,12 @@ def google():
               results.append(result)
     return jsonify(results)
     
-    
+@app.route('/mlb/games', methods=['GET','POST'])
+def mlb():
+    today = date.today()
+    stats = requests.get("https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={}&endDate={}".format(today,today))
+    soup = BeautifulSoup(stats.text, 'html.parser')
+    return str(soup)
 
 
 if __name__ == "__main__":
