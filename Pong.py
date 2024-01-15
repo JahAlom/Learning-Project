@@ -53,10 +53,25 @@ def google():
     
 @app.route('/mlb/games', methods=['GET','POST'])
 def mlb():
-    today = date.today()
-    stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={today}&endDate={today}")
-    soup = BeautifulSoup(stats.text, 'html.parser')
-    return str(soup)
+
+    request_data = request.get_json()
+    startDate = request_data['startDate']
+    endDate = request_data['endDate']
+
+    if startDate and endDate == '':
+         today = date.today()
+         stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={today}&endDate={today}")
+         data = stats.json()
+         return data
+    else:
+        stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={startDate}&endDate={endDate}")
+        data = stats.json()
+        return data
+
+    #today = date.today()
+    #stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={today}&endDate={today}")
+    #data = stats.text
+    #return jsonify(data)
 
 
 if __name__ == "__main__":
