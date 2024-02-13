@@ -1,12 +1,21 @@
 from flask import Flask, jsonify, request #importing Flask
 from datetime import datetime, date #importing datetime module
+from flask_caching import Cache
 import socket #importing socket module
 from bannedWordChecker import hasBannedWords
 from bs4 import BeautifulSoup
 import urllib.parse
 import json
 import requests
+
+config = {
+     "DEBUG": True,
+     "CACHE_TYPE": "SimpleCache",
+     "CACHE_DEFAULT_TIMEOUT": 300
+}
 app = Flask(__name__)
+app.config.from_mapping(config)
+cache = Cache(app)
 
 @app.route("/")
 def index(): #Index function to return pong response, current time, and name of local machine
@@ -25,11 +34,21 @@ def textcombine():
     secMessage = request_data['secondMessage'] 
     cmbMessage = fstMessage + secMessage #combined messagees
 
+
+    cache_key = f"combined_message_{fstMessage}_{secMessage}"
+    result_cach = cache.get(cache_key)
+    if result_cach is not None:
+         return jsonify(combinedMessage = (cmbMessage))
+
+
+
     #Checks if any words in Banned Words list appears in User's Message
     isbanned = hasBannedWords(fstMessage,secMessage)
     if isbanned:
         return "Banned Word in Message", 400
+    cache.set(cache_key,cmbMessage)
     return jsonify(combinedMessage = (cmbMessage))
+    
 
 @app.route("/google", methods = ['GET', 'POST'])
 def google():
@@ -67,12 +86,7 @@ def mlb():
         stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={startDate}&endDate={endDate}")
         data = stats.json()
         return data
-
-    #today = date.today()
-    #stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={today}&endDate={today}")
-    #data = stats.text
-    #return jsonify(data)
-
-
+    
+    
 if __name__ == "__main__":
 	app.run(port = 8000)
