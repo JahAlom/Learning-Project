@@ -37,10 +37,12 @@ def textcombine():
 
     cache_key = f"combined_message_{fstMessage}_{secMessage}"
     result_cach = cache.get(cache_key)
+    print(result_cach)
     if result_cach is not None:
+         print('result found in cache, returning cached response')
          return jsonify(combinedMessage = (cmbMessage))
 
-
+    print('result not found in cache')
 
     #Checks if any words in Banned Words list appears in User's Message
     isbanned = hasBannedWords(fstMessage,secMessage)
@@ -69,7 +71,8 @@ def google():
               result = {'title': str(title.text), 'url': str(link)}
               results.append(result)
     return jsonify(results)
-    
+
+#http://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate=2023-08-29&endDate=2023-08-29    
 @app.route('/mlb/games', methods=['GET','POST'])
 def mlb():
 
@@ -77,15 +80,27 @@ def mlb():
     startDate = request_data['startDate']
     endDate = request_data['endDate']
 
+
     if startDate and endDate == '':
          today = date.today()
          stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={today}&endDate={today}")
          data = stats.json()
-         return data
+         cache_key = f"Dates_{startDate}_{endDate}"
+         result_cache = cache.get(cache_key)
+         if result_cache is not None:
+              print("Results from cache received")
+              return data
     else:
+        print("Calling MLB Api")
         stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={startDate}&endDate={endDate}")
         data = stats.json()
+        cache_key = f"Dates_{startDate}_{endDate}"
+        result_cache = cache.get(cache_key)
+        if result_cache is not None:
+            print("Results from cache received")
+            return data
         return data
+    
     
     
 if __name__ == "__main__":
