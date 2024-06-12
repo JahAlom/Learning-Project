@@ -34,13 +34,12 @@ def textcombine():
     secMessage = request_data['secondMessage'] 
     cmbMessage = fstMessage + secMessage #combined messagees
 
-
+    #Caching starts here
     cache_key = f"combined_message_{fstMessage}_{secMessage}"
     result_cach = cache.get(cache_key)
-    print(result_cach)
     if result_cach is not None:
-         print('result found in cache, returning cached response')
-         return jsonify(combinedMessage = (cmbMessage))
+         print('Result found in cache, returning cached response: '+ result_cach)
+         return jsonify(combinedMessage = (result_cach))
 
     print('result not found in cache')
 
@@ -48,6 +47,8 @@ def textcombine():
     isbanned = hasBannedWords(fstMessage,secMessage)
     if isbanned:
         return "Banned Word in Message", 400
+   
+    #Caching starts here
     cache.set(cache_key,cmbMessage)
     return jsonify(combinedMessage = (cmbMessage))
     
@@ -81,25 +82,36 @@ def mlb():
     endDate = request_data['endDate']
 
 
-    if startDate and endDate == '':
+    if not startDate and not endDate:
          today = date.today()
          stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={today}&endDate={today}")
          data = stats.json()
-         cache_key = f"Dates_{startDate}_{endDate}"
+
+         #Caching starts here
+         cache_key = f"Dates: {startDate}_{endDate}"
          result_cache = cache.get(cache_key)
+
          if result_cache is not None:
-              print("Results from cache received")
-              return data
+              print("Results from today's cache has been received")
+              return result_cache
+         else:
+              print(f"There is no cached data found for today's date")
+
     else:
-        print("Calling MLB Api")
         stats = requests.get(f"https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&startDate={startDate}&endDate={endDate}")
         data = stats.json()
-        cache_key = f"Dates_{startDate}_{endDate}"
+
+        #Caching starts here
+        cache_key = f"Dates: {startDate}, {endDate}"
         result_cache = cache.get(cache_key)
         if result_cache is not None:
-            print("Results from cache received")
-            return data
-        return data
+            print("The results of the cache with specified dates have been received.")
+            return result_cache
+        else:
+              print(f"No cached data found for key: {cache_key}")
+    
+    cache.set(cache_key, data)
+    return data
     
     
     
